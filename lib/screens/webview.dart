@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewEx extends StatefulWidget {
@@ -12,6 +11,7 @@ class WebViewEx extends StatefulWidget {
 }
 
 class _WebViewExState extends State<WebViewEx> {
+  bool loading = true;
   @override
   void initState() {
     super.initState();
@@ -22,9 +22,30 @@ class _WebViewExState extends State<WebViewEx> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: WebView(
-        initialUrl: 'https://hoblist.com',
-      )),
+        body: Stack(
+          children: [
+            WebView(
+              onWebViewCreated: (controller) {},
+              onPageFinished: (value) {
+                setState(() {
+                  loading = false;
+                });
+              },
+              onPageStarted: (value) {
+                setState(() {
+                  loading = true;
+                });
+              },
+              initialUrl: 'https://hoblist.com',
+            ),
+            if (loading)
+              Container(
+                  child: Center(
+                child: CircularProgressIndicator(),
+              ))
+          ],
+        ),
+      ),
     );
   }
 }

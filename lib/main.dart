@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:hoblist_movies/screens/home_screen.dart';
 import 'dart:convert';
 
+import 'package:hoblist_movies/screens/register_screen.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Homescreen(),
+      home: RegistrationScreen(),
     );
   }
 }
