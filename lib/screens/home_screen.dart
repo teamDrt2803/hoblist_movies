@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hoblist_movies/controllers/movie_controller.dart';
 import 'package:hoblist_movies/screens/company_info.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:hoblist_movies/screens/webview.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({Key? key}) : super(key: key);
@@ -21,7 +19,6 @@ class _HomescreenState extends State<Homescreen> {
   initState() {
     // TODO: implement initState
     super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
 
     getMovie();
 
@@ -72,7 +69,12 @@ class _HomescreenState extends State<Homescreen> {
                   ),
                 );
               } else if (result == '1') {
-                webview();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WebViewEx(),
+                  ),
+                );
               }
             },
             itemBuilder: (context) => [
@@ -88,12 +90,6 @@ class _HomescreenState extends State<Homescreen> {
           ),
         ],
       ),
-    );
-  }
-
-  WebView webview() {
-    return WebView(
-      initialUrl: 'https://hoblist.com.',
     );
   }
 }
