@@ -10,7 +10,7 @@ class CustomTextfield extends StatelessWidget {
   TextEditingController? controller;
   String? labelText;
   bool? obsecureText;
-  String Function(String?)? validator;
+  String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {

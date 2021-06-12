@@ -4,8 +4,9 @@ import 'package:hoblist_movies/screens/home_screen.dart';
 import 'package:hoblist_movies/screens/login_screen.dart';
 import 'package:hoblist_movies/utilities/constants.dart';
 import 'package:hoblist_movies/utilities/customWidgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:hoblist_movies/extensions/validate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -26,9 +27,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   String? selectedProffession = null;
 
-  Future<void> setData() async {
-    SharedPreferences? registerdata = await SharedPreferences.getInstance();
+  SharedPreferences? registerdata;
 
+  @override
+  initState() {
+    // TODO: implement initState
+    super.initState();
+
+    initiateSharedPreferences();
+  }
+
+  void setData() {
     String name = name_controller.text;
     String password = Crypt.sha256(password_controller.text).toString();
     String email = email_controller.text;
@@ -40,22 +49,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         selectedProffession != null) {
       print('Successfull');
 
-      registerdata.setString('name', name);
-      registerdata.setString('password', password);
-      registerdata.setString('email', email);
-      registerdata.setString('phone', phone);
-      registerdata.setString('profession', selectedProffession!);
+      registerdata?.setString('name', name);
+      registerdata?.setString('password', password);
+      registerdata?.setString('email', email);
+      registerdata?.setString('phone', phone);
+      registerdata?.setString('profession', selectedProffession!);
     }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Homescreen(),
-      ),
-    );
   }
 
-  DropdownButton<String> professionDropdown() {
+  DropdownButtonFormField<String> professionDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
 
     for (String profession in professions) {
@@ -66,15 +68,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       dropdownItems.add(newItem);
     }
 
-    return DropdownButton<String>(
+    return DropdownButtonFormField<String>(
       hint: Text('Choose Your Proffession'),
       value: selectedProffession,
       items: dropdownItems,
       onChanged: (value) {
-        selectedProffession = value!;
-
+        selectedProffession = value;
         setState(() {});
       },
+      validator: (value) =>
+          value == null ? 'Please select you Profession' : null,
     );
   }
 
@@ -108,7 +111,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               CustomTextfield(
                   controller: password_controller,
                   validator: (password) {
-                    return password!.isPasswordValid();
+                    return password?.isPasswordValid();
                   },
                   obsecureText: true,
                   labelText: 'Password'),
@@ -116,7 +119,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   controller: email_controller,
                   validator: (email) {
                     if (email!.isEmail()) {
-                      return "";
+                      return null;
                     } else {
                       return 'Enter a valid email address';
                     }
@@ -126,25 +129,34 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               CustomTextfield(
                   controller: phone_controller,
                   validator: (phone) {
-                    return phone!.validateMobile(phone);
+                    return phone?.validateMobile(phone);
                   },
                   obsecureText: false,
                   labelText: 'Phone'),
-              professionDropdown(),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: professionDropdown(),
+              ),
               SizedBox(
                 height: 40,
               ),
               (!_isloading)
                   ? ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          setData();
+
+                          clearTextFormFields();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Homescreen(),
+                            ),
+                          );
                           setState(() {
                             _isloading = true;
                           });
                         }
-                        await setData();
-
-                        clearTextFormFields();
                       },
                       child: Text("Register"),
                     )
@@ -175,6 +187,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> initiateSharedPreferences() async {
+    registerdata = await SharedPreferences.getInstance();
   }
 
   void clearTextFormFields() {
