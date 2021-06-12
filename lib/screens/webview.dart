@@ -20,9 +20,11 @@ class _WebViewExState extends State<WebViewEx> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: WebView(
-      initialUrl: 'https://hoblist.com',
-    ));
+    return SafeArea(
+      child: Scaffold(
+          body: WebView(
+        initialUrl: 'https://hoblist.com',
+      )),
+    );
   }
 }
