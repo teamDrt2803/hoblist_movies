@@ -4,8 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hoblist_movies/screens/home_screen.dart';
-import 'package:hoblist_movies/screens/login_screen.dart';
-import 'package:hoblist_movies/screens/register_screen.dart';
+import 'dart:convert';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -13,6 +12,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a Background Message ${message.messageId}');
 }
 
+Codec<String, String> stringToBase64 = utf8.fuse(base64);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

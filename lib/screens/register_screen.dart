@@ -1,12 +1,13 @@
-import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
 import 'package:hoblist_movies/screens/home_screen.dart';
 import 'package:hoblist_movies/screens/login_screen.dart';
 import 'package:hoblist_movies/utilities/constants.dart';
 import 'package:hoblist_movies/utilities/customWidgets.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:hoblist_movies/extensions/validate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -25,13 +26,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   bool _isloading = false;
 
-  String? selectedProffession = null;
+  String? selectedProffession;
 
   SharedPreferences? registerdata;
 
   @override
   initState() {
-    // TODO: implement initState
     super.initState();
 
     initiateSharedPreferences();
@@ -39,7 +39,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void setData() {
     String name = name_controller.text;
-    String password = Crypt.sha256(password_controller.text).toString();
+    String password = stringToBase64.encode(password_controller.text);
     String email = email_controller.text;
     String phone = phone_controller.text;
     if (name != '' &&

@@ -38,8 +38,11 @@ class MovieList {
   }
 
   factory MovieList.fromMap(Map<String, dynamic> map) {
+    if (map == null) print('null');
     return MovieList(
-      result: List<Result>.from(map['result']?.map((x) => Result.fromMap(x))),
+      result: map['result'] == null
+          ? []
+          : List<Result>.from(map['result']?.map((x) => Result.fromMap(x))),
       queryParam: QueryParam.fromMap(map['queryParam']),
       code: map['code']?.toInt(),
       message: map['message'],
@@ -49,7 +52,7 @@ class MovieList {
   String toJson() => json.encode(toMap());
 
   factory MovieList.fromJson(String source) =>
-      MovieList.fromMap(json.decode(source));
+      MovieList.fromMap(Map<String, dynamic>.from(jsonDecode(source)));
 
   @override
   String toString() {
@@ -190,12 +193,12 @@ class Result {
       stars: List<String>.from(map['stars']),
       productionCompany: List<String>.from(map['productionCompany']),
       pageViews: map['pageViews']?.toInt(),
-      upVoted: List<dynamic>.from(map['upVoted']),
-      downVoted: List<String>.from(map['downVoted']),
+      upVoted: List<dynamic>.from(map['upVoted'] ??= []),
+      downVoted: List<String>.from(map['downVoted'] ??= []),
       title: map['title'],
       language: map['language'],
-      runTime: map['runTime']?.toInt(),
-      releasedDate: map['releasedDate']?.toInt(),
+      runTime: map['runTime'] ??= 0.0.toInt(),
+      releasedDate: map['releasedDate'] ??= 0.0.toInt(),
       genre: map['genre'],
       voted: List<Voted>.from(map['voted']?.map((x) => Voted.fromMap(x))),
       poster: map['poster'],
@@ -379,10 +382,10 @@ class QueryParam {
 
   factory QueryParam.fromMap(Map<String, dynamic> map) {
     return QueryParam(
-      category: map['category'],
-      language: map['language'],
-      genre: map['genre'],
-      sort: map['sort'],
+      category: map['category'] ?? '',
+      language: map['language'] ?? '',
+      genre: map['genre'] ?? '',
+      sort: map['sort'] ?? '',
     );
   }
 

@@ -1,10 +1,11 @@
-import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
 import 'package:hoblist_movies/screens/home_screen.dart';
 import 'package:hoblist_movies/screens/register_screen.dart';
 import 'package:hoblist_movies/extensions/validate.dart';
 import 'package:hoblist_movies/utilities/customWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -26,9 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     initiateSharedPreferences();
     print(registerdata?.getString('name'));
   }
@@ -86,11 +85,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ? ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          checkData();
-
                           setState(() {
                             _isLoading = true;
                           });
+                          checkData();
                         }
                       },
                       child: Text("Log-In"),
@@ -130,22 +128,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void checkData() {
     String username = username_controller.text;
-    String password = Crypt.sha256(password_controller.text).toString();
-
+    String password = stringToBase64.encode(password_controller.text);
     var name = registerdata?.getString('name');
     var pass = registerdata?.getString('password');
     if (username == name && password == pass) {
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Homescreen(),
-        ),
-      );
+          context, MaterialPageRoute(builder: (context) => Homescreen()));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       setState(() {
         _isLoading = false;
       });
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 }
