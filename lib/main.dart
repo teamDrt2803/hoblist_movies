@@ -1,8 +1,35 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
+import 'package:hoblist_movies/screens/home_screen.dart';
 import 'package:hoblist_movies/screens/login_screen.dart';
 import 'package:hoblist_movies/screens/register_screen.dart';
 
-void main() {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  print('Handling a Background Message ${message.messageId}');
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await AwesomeNotifications().initialize(
+    'resource://mipmap/ic_launcher',
+    [
+      NotificationChannel(
+          channelName: 'Hoblist',
+          channelDescription: 'Hoblist Notify',
+          channelKey: 'Key123456789',
+          playSound: true,
+          enableVibration: true,
+          importance: NotificationImportance.High)
+    ],
+  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(MyApp());
 }
 
@@ -15,7 +42,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RegistrationScreen(),
+      home: Homescreen(),
     );
   }
 }

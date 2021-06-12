@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jaykumar.hoblist_movies">
+     <uses-permission android:name="android.permission.INTERNET" /> 
    <application
         android:label="hoblist_movies"
         android:icon="@mipmap/ic_launcher">
@@ -27,6 +28,10 @@
               android:name="io.flutter.embedding.android.SplashScreenDrawable"
               android:resource="@drawable/launch_background"
               />
+              <meta-data
+                    android:name="com.google.firebase.messaging.default_notification_icon"
+                    android:resource="@mipmap/ic_launcher" 
+                    />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
